@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * axhub 디자인 시스템 토큰 (v2.1 발췌) — 콘솔/프론트와 무드 정렬.
+ * primary=블루, surface=gray-50 위 흰 카드, Pretendard. 다크는 prefers-color-scheme.
+ * ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --primary: #2d64fa;
+  --primary-hover: #5985fb;
+  --primary-soft: #eaf0fe;
+  --primary-soft-hover: #d6e2fd;
+
+  --bg-surface: #f6f7f9;
+  --bg-content: #ffffff;
+
+  --fg-default: #16171b;
+  --fg-muted: #6d717e;
+  --fg-subtle: #9ca0ab;
+
+  --border-default: #e4e5e8;
+
+  --success: #27c961;
+  --warning: #f6c205;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #4b7bff;
+    --primary-hover: #5985fb;
+    --primary-soft: rgba(75, 123, 255, 0.22);
+    --primary-soft-hover: rgba(75, 123, 255, 0.32);
+
+    --bg-surface: #1d1e23;
+    --bg-content: #25272d;
+
+    --fg-default: #ffffff;
+    --fg-muted: #d1d3d8;
+    --fg-subtle: #9ca0ab;
+
+    --border-default: rgba(255, 255, 255, 0.1);
+
+    --success: #3ddb78;
+    --warning: #ffe246;
+  }
+}
+
+body {
+  color: var(--fg-default);
+  background: var(--bg-surface);
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    "Segoe UI", Roboto, sans-serif;
+}

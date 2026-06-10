@@ -1,0 +1,59 @@
+# axhub.yaml.example
+# 이 파일은 에이전트/사람이 axhub.yaml 을 작성할 때 보는 참고용이에요.
+# 실제 배포에는 axhub.yaml 만 사용돼요. 필요한 필드만 axhub.yaml 로 복사하세요.
+#
+# 허용 필드 전체 목록:
+# version, name
+# runtime.port, runtime.health_path
+# build.strategy, build.framework, build.install, build.build, build.start,
+# build.dockerfile, build.deploy_method, build.compose_file
+# env.required[].name/scope, env.optional[].name/scope
+# ci.commands[], ci.timeout
+
+version: axhub/v1 # 권장값. 새 파일은 axhub/v1 을 사용하세요.
+name: nextjs-axhub # 표시용 label. 저장된 앱 이름을 강제하지 않아요.
+
+runtime:
+  port: 3000 # 1..65535. Dockerfile EXPOSE 와 맞추세요. unset 이면 Dockerfile 또는 기본 설정으로 자동 판단.
+  health_path: /healthz # SSR 홈 대신 가벼운 route 권장. unset 이면 /.
+
+build:
+  strategy: auto # auto | pinned. auto 기본값.
+  # framework 는 빌드/CI 힌트예요. 대표 라벨: node, python, go, ruby, java, kotlin, rust. 자동 판단 실패 시 unknown.
+  # generated Dockerfile 기본값은 node/python/go/ruby/java/kotlin 을 알아요. rust 는 Dockerfile 또는 명시 명령을 권장해요.
+  # ci.commands 실행 이미지는 node/python/go/rust 를 직접 지원하고, ruby/java/kotlin/unknown 은 기본 shell 을 사용해요.
+  framework: node
+  deploy_method: docker # docker | compose. unset 이면 repo 구조 또는 기본 설정으로 자동 판단.
+  dockerfile: Dockerfile # docker mode Dockerfile path. unset 이면 기본 Dockerfile 경로.
+
+  # compose mode 를 쓸 때만 사용해요. dockerfile 과 동시에 쓰지 마세요.
+  # deploy_method: compose
+  # compose_file: docker-compose.yml # default: docker-compose.yml. axhub 는 docker-compose.yml/yaml, compose.yml/yaml 도 자동 탐색.
+
+  # Dockerfile 없이 axhub 가 생성한 Dockerfile 을 쓰는 pinned mode 예시예요.
+  # 이 경우 start 는 필수이고, install/build 는 framework 기본값 대신 쓰는 override예요.
+  # strategy: pinned
+  # install: npm ci
+  # build: npm run build
+  # start: HOSTNAME=0.0.0.0 PORT=${PORT:-3000} node .next/standalone/server.js
+
+env:
+  # 값은 절대 적지 마세요. 이름과 scope 계약만 적어요.
+  # required 는 배포 전 env preflight 를 통과해야 해요.
+  required: []
+  optional:
+    - name: APPHUB_API_URL
+      scope: runtime # build | runtime | both. scope 생략 시 runtime 기본값.
+    - name: APPHUB_APP_SLUG
+      scope: runtime
+    - name: APPHUB_TENANT
+      scope: runtime
+
+ci:
+  # 선택: build 전 Cloud Build CI 단계에서 실행할 명령이에요.
+  # commands 는 최대 10개예요.
+  # timeout 은 1..600초 값만 허용되는 선택 필드예요. 현재 실행 제한은 플랫폼 기본 CI timeout 을 사용해요.
+  # commands:
+  #   - npm ci
+  #   - npm run build
+  # timeout: 300

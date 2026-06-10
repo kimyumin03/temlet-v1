@@ -1,0 +1,18 @@
+version: axhub/v1
+name: nextjs-axhub
+runtime:
+  port: 3000
+  health_path: /healthz
+build:
+  strategy: auto
+  framework: nextjs
+  dockerfile: Dockerfile
+  deploy_method: docker
+env:
+  optional:
+    - name: APPHUB_API_URL
+      scope: runtime
+    - name: APPHUB_APP_SLUG
+      scope: runtime
+    - name: APPHUB_TENANT
+      scope: runtime
